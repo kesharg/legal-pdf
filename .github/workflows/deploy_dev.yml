@@ -1,0 +1,24 @@
+# Link: https://medium.com/@ikbenezer/automate-your-laravel-app-deployment-with-github-actions-ab7b2f7417f2
+
+name: Deploy Laravel Project on Dev Server
+
+on:
+  push:
+    branches:
+      - dev
+
+# Authenticate to the the server via ssh
+# and run our deployment script
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy to Dev server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_SSH_HOST }}
+          username: ${{ secrets.DEV_SSH_USER }}
+          port: ${{ secrets.DEV_SSH_PORT }}
+          key: ${{ secrets.DEV_SSH_PRIVATE_KEY }}
+          script: "cd /var/www/corrbuilder && /var/www/corrbuilder/dev_deploy.sh"
